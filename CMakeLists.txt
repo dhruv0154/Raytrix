@@ -3,11 +3,10 @@ project(Raytrix LANGUAGES CXX)
 
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
-target_compile_features(Raytrix PRIVATE cxx_std_20)
-
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "src/*.cpp")
 
 add_executable(Raytrix ${SOURCES})
+target_compile_features(Raytrix PRIVATE cxx_std_20)
 target_include_directories(Raytrix PRIVATE include)
 
 include(FetchContent)
