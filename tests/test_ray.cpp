@@ -1,5 +1,4 @@
-#include "math/ray.h"
-#include "math/vec3.h"
+#include "common.h"
 
 #include <catch2/catch_test_macros.hpp>
 

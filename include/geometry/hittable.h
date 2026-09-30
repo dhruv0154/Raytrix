@@ -1,7 +1,5 @@
 #pragma once
 
-#include "ray.h"
-
 struct hitRecord {
     point3 p;
     vec3 normal;

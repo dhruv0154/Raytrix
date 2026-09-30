@@ -1,11 +1,10 @@
 #pragma once 
 
-#include "math/vec3.h"
-#include <iostream>
+#include "vec3.h"
 
 using color = vec3;
 
-void writeColor(std::ostream& out, const color& pixelColor) {
+inline void writeColor(std::ostream& out, const color& pixelColor) {
     auto r = pixelColor.x();
     auto g = pixelColor.y();
     auto b = pixelColor.z();

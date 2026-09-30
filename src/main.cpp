@@ -1,9 +1,12 @@
-#include "math/ray.h"
-#include "math/color.h"
+#include "common.h"
+#include "geometry/hittable_list.h"
+#include "geometry/sphere.h"
 
-#include <iostream>
-
-color rayColor(const ray& r) {
+color rayColor(const ray& r, const hittable& world) {
+    hitRecord rec;
+    if (world.hit(r, 0, infinity, rec)) {
+        return 0.5 * (rec.normal + color(1, 1, 1));
+    }
     vec3 unitDir = unitVector(r.getDirection());
     float a = 0.5 * (unitDir.y() + 1.0);
     return (1.0 - a) * color(1.0, 1.0, 1.0) + a * color(0.5, 0.7, 1.0);
@@ -14,6 +17,11 @@ int main() {
     int imageWidth = 400;
     int imageHeight = int(imageWidth / aspectRatio);
     imageHeight = (imageHeight < 1) ? 1 : imageHeight;
+
+    hittableList world;
+
+    world.add(std::make_unique<sphere>(point3(0,0,-1), 0.5));
+    world.add(std::make_unique<sphere>(point3(0,-100.5,-1), 100));
 
     auto focalLength = 1.0;
     auto viewportHeight = 2.0;
@@ -38,7 +46,7 @@ int main() {
             auto rayDirection = pixelCenter - cameraCenter;
             ray r(cameraCenter, rayDirection);
 
-            color pixelColor = rayColor(r);
+            color pixelColor = rayColor(r, world);
             writeColor(std::cout, pixelColor);
         }
     }
