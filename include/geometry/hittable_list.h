@@ -2,33 +2,19 @@
 
 #include "hittable.h"
 #include <vector>
+#include <memory>
 
 class hittableList : public hittable {
 public:
-    hittableList() {}
-    hittableList(std::unique_ptr<hittable> object) { add(std::move(object)); }
+    hittableList();
+    hittableList(std::unique_ptr<hittable> object);
 
-    void clear() { objects.clear(); }
+    // list management
+    void clear();
+    void add(std::unique_ptr<hittable> object);
 
-    void add(std::unique_ptr<hittable> object) {
-        objects.push_back(std::move(object));
-    }
-
-    bool hit(const ray& r, double rayTmin, double rayTmax, hitRecord& rec) const override {
-        hitRecord tempRec;
-        bool hitAnything = false;
-        double closestSoFar = rayTmax;
-
-        for (const auto& object : objects) {
-            if (object -> hit(r, rayTmin, closestSoFar, tempRec)) {
-                hitAnything = true;
-                closestSoFar = tempRec.t;
-                rec = tempRec;
-            }
-        }
-
-        return hitAnything;
-    }
+    // ray intersection test
+    bool hit(const ray& r, interval rayT, hitRecord& rec) const override;
 
 private:
     std::vector<std::unique_ptr<hittable>> objects;

@@ -1,4 +1,4 @@
-#include "common.h"
+#include "math/ray.h"
 
 #include <catch2/catch_test_macros.hpp>
 

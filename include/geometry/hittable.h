@@ -1,5 +1,10 @@
 #pragma once
 
+#include "math/vec3.h"
+#include "math/color.h"
+#include "math/ray.h"
+#include "math/interval.h"
+
 struct hitRecord {
     point3 p;
     vec3 normal;
@@ -23,5 +28,5 @@ class hittable {
 public:
     virtual ~hittable() = default;
     // check if the ray hit the object
-    virtual bool hit(const ray& r, double rayTmin, double rayTmax, hitRecord& rec) const = 0;
+    virtual bool hit(const ray& r, interval rayT, hitRecord& rec) const = 0;
 };
