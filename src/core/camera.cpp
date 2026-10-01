@@ -3,6 +3,7 @@
 camera::camera() {
     aspectRatio = 1.0;
     imageWidth = 100;
+    samplesPerPixel = 10;
 }
 
 void camera::initialize() {
@@ -10,6 +11,8 @@ void camera::initialize() {
     imageHeight = int(imageWidth / aspectRatio);
     // force the image to be at least one pixel tall so we do not divide by zero later
     imageHeight = (imageHeight < 1) ? 1 : imageHeight;
+
+    pixelSamplesScale = 1.0 / samplesPerPixel;
 
     // the distance from the camera eye to the virtual screen
     auto focalLength = 1.0;
@@ -51,17 +54,13 @@ void camera::render(const hittable& world) {
         std::clog << "\rScanlines remaining: " << (imageHeight - j) << ' ' << std::flush;
 
         for (int i = 0; i < imageWidth; i++) {
-            // calculate the exact 3d target for this specific pixel
-            auto pixelCenter = pixel00Loc + (i * pixelDeltaU) + (j * pixelDeltaV);
-            // create a direction arrow pointing from the camera toward the pixel
-            auto rayDirection = pixelCenter - cameraCenter;
-            // build the actual ray starting at the camera and moving along the direction
-            ray r(cameraCenter, rayDirection);
-
-            // figure out what color this ray hits out in the world
-            color pixelColor = rayColor(r, world);
-            // output that final color to our image file
-            writeColor(std::cout, pixelColor);
+            // take some samples and average the result
+            color pixelColor = color(0, 0, 0);
+            for (int sample = 0; sample < samplesPerPixel; sample++) {
+                ray r = getRay(i, j);
+                pixelColor += rayColor(r, world);
+            }
+            writeColor(std::cout, pixelSamplesScale * pixelColor);
         }
     }
 
@@ -82,4 +81,21 @@ color camera::rayColor(const ray& r, const hittable& world) {
     float a = 0.5 * (unitDir.y() + 1.0);
     // blend between white at the bottom and blue at the top based on the y height
     return (1.0 - a) * color(1.0, 1.0, 1.0) + a * color(0.5, 0.7, 1.0);
+}
+
+vec3 camera::sampleSquare() const {
+    return vec3(randomDouble() - 0.5, randomDouble() - 0.5, 0);
+}
+
+ray camera::getRay(int i, int j) const {
+    // a camera ray originating from the origin and directed at randomly sampled
+    // point around the pixel location i, j.
+
+    auto offset = sampleSquare();
+    auto pixelSample = pixel00Loc + ((i + offset.x()) * pixelDeltaU) + ((j + offset.y()) * pixelDeltaV);
+
+    auto rayOrigin = cameraCenter;
+    auto rayDirection = pixelSample - rayOrigin;
+
+    return ray(rayOrigin, rayDirection);
 }
