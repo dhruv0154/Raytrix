@@ -45,10 +45,10 @@ void camera::initialize() {
     pixel00Loc = viewportUpperLeft + 0.5 * (pixelDeltaU + pixelDeltaV);
 }
 
-void camera::render(const hittable& world) {
+void camera::render(const hittable& world, std::ostream& out) {
     initialize();
 
-    std::cout << "P3\n" << imageWidth << ' ' << imageHeight << "\n255\n";
+    out << "P3\n" << imageWidth << ' ' << imageHeight << "\n255\n";
 
     for (int j = 0; j < imageHeight; j++) {
         std::clog << "\rScanlines remaining: " << (imageHeight - j) << ' ' << std::flush;
@@ -60,7 +60,7 @@ void camera::render(const hittable& world) {
                 ray r = getRay(i, j);
                 pixelColor += rayColor(r, world);
             }
-            writeColor(std::cout, pixelSamplesScale * pixelColor);
+            writeColor(out, pixelSamplesScale * pixelColor);
         }
     }
 
@@ -72,7 +72,8 @@ color camera::rayColor(const ray& r, const hittable& world) {
     
     // check if the ray hits any object between zero and infinity
     if (world.hit(r, interval(0, infinity), rec)) {
-        return 0.5 * (rec.normal + color(1, 1, 1));
+        vec3 direction = randomOnHemisphere(rec.normal);
+        return 0.5 * rayColor(ray(rec.p, direction), world);
     }
     
     // the ray missed everything so we draw the sky background instead

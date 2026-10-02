@@ -10,6 +10,7 @@ list(FILTER CORE_SOURCES EXCLUDE REGEX "main\\.cpp$")
 
 add_executable(Raytrix ${SOURCES})
 target_compile_features(Raytrix PRIVATE cxx_std_20)
+target_compile_definitions(Raytrix PRIVATE ROOT_DIR="${CMAKE_SOURCE_DIR}")
 target_include_directories(Raytrix PRIVATE include)
 
 include(FetchContent)

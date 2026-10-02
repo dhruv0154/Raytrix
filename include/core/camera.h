@@ -15,7 +15,7 @@ public:
     int imageWidth;
     int samplesPerPixel;
     
-    void render(const hittable& world);
+    void render(const hittable& world, std::ostream& out = std::cout);
 
 private:
     int imageHeight;

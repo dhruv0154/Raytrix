@@ -127,3 +127,21 @@ vec3 crossProduct(const vec3& u, const vec3& v) {
 vec3 unitVector(const vec3& v) {
     return v / v.length();
 }
+
+vec3 randomUnitVector() {
+    while (true) {
+        auto p = vec3::random(-1, 1);
+        auto lenSq = p.lengthSquared();
+        // to avoid division by zero we take values greater than 10^-160
+        if (1e-160 < lenSq && lenSq <= 1)
+            return p / sqrt(lenSq);
+    }
+}
+
+vec3 randomOnHemisphere(const vec3& normal) {
+    vec3 onUnitSphere = randomUnitVector();
+    if (dot(onUnitSphere, normal) > 0.0)
+        return onUnitSphere;
+    else
+        return -onUnitSphere;
+}
