@@ -14,6 +14,7 @@ public:
     float aspectRatio;
     int imageWidth;
     int samplesPerPixel;
+    int maxDepth;
     
     void render(const hittable& world, std::ostream& out = std::cout);
 
@@ -32,7 +33,7 @@ private:
 
     void initialize();
     // shoots a single ray into the world and figures out what color to bring back
-    color rayColor(const ray& r, const hittable& world);
+    color rayColor(const ray& r, int depth, const hittable& world);
     // returns a vector to a random point inside the pixel square [-.5, -.5]-[+.5, +.5]
     vec3 sampleSquare() const;
     // returns a ray originating from the origin and directed at random points around the pixel (i, j)

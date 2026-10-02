@@ -18,6 +18,7 @@ int main() {
     cam.aspectRatio = 16.0 / 9.0;
     cam.imageWidth = 400.0;
     cam.samplesPerPixel = 100;
+    cam.maxDepth = 50;
 
     #ifndef ROOT_DIR
     #define ROOT_DIR "." 

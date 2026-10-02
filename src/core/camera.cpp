@@ -4,6 +4,7 @@ camera::camera() {
     aspectRatio = 1.0;
     imageWidth = 100;
     samplesPerPixel = 10;
+    maxDepth = 10;
 }
 
 void camera::initialize() {
@@ -58,7 +59,7 @@ void camera::render(const hittable& world, std::ostream& out) {
             color pixelColor = color(0, 0, 0);
             for (int sample = 0; sample < samplesPerPixel; sample++) {
                 ray r = getRay(i, j);
-                pixelColor += rayColor(r, world);
+                pixelColor += rayColor(r, maxDepth, world);
             }
             writeColor(out, pixelSamplesScale * pixelColor);
         }
@@ -67,13 +68,15 @@ void camera::render(const hittable& world, std::ostream& out) {
     std::clog << "\rDone.                 \n";
 }
 
-color camera::rayColor(const ray& r, const hittable& world) {
+color camera::rayColor(const ray& r, int depth, const hittable& world) {
+    if (depth <= 0)
+        return color(0, 0, 0);
+
     hitRecord rec;
-    
-    // check if the ray hits any object between zero and infinity
-    if (world.hit(r, interval(0, infinity), rec)) {
-        vec3 direction = randomOnHemisphere(rec.normal);
-        return 0.5 * rayColor(ray(rec.p, direction), world);
+    // check if the ray hits any object between 0.001 (to avoid shadow acne) and infinity
+    if (world.hit(r, interval(0.001, infinity), rec)) {
+        vec3 direction = rec.normal + randomUnitVector();
+        return 0.5 * rayColor(ray(rec.p, direction), depth - 1, world);
     }
     
     // the ray missed everything so we draw the sky background instead
