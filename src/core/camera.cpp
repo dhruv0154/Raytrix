@@ -75,6 +75,7 @@ color camera::rayColor(const ray& r, int depth, const hittable& world) {
     hitRecord rec;
     // check if the ray hits any object between 0.001 (to avoid shadow acne) and infinity
     if (world.hit(r, interval(0.001, infinity), rec)) {
+        // make a tangent sphere at the point of incidence with center at the normal
         vec3 direction = rec.normal + randomUnitVector();
         return 0.5 * rayColor(ray(rec.p, direction), depth - 1, world);
     }
