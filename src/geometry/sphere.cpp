@@ -2,8 +2,8 @@
 
 #include <cmath>
 
-sphere::sphere(const point3& center, double radius) 
-    : center(center), radius(std::fmax(0.0, radius)) {}
+sphere::sphere(const point3& center, double radius, std::shared_ptr<material> mat) 
+    : center(center), radius(std::fmax(0.0, radius)), mat(mat) {}
 
 // ray intersection test
 bool sphere::hit(const ray& r, interval rayT, hitRecord& rec) const {
@@ -32,6 +32,7 @@ bool sphere::hit(const ray& r, interval rayT, hitRecord& rec) const {
     // equal to the radius of the sphere
     vec3 outwardNormal = (rec.p - center) / radius;
     rec.setFaceNormal(r, outwardNormal);
+    rec.mat = mat;
     
     return true;
 }

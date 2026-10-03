@@ -47,6 +47,11 @@ public:
     static vec3 random(double min, double max) {
         return vec3(randomDouble(min, max), randomDouble(min, max), randomDouble(min, max));
     }
+
+    bool nearZero() const {
+        auto s = 1e-8;
+        return (std::fabs(e[0]) < s) && (std::fabs(e[1]) < s) && (std::fabs(e[2]) < s);
+    }
 };
 
 using point3 = vec3;
@@ -58,3 +63,4 @@ vec3 crossProduct(const vec3& u, const vec3& v);
 vec3 unitVector(const vec3& v);
 vec3 randomUnitVector();
 vec3 randomOnHemisphere(const vec3& normal);
+vec3 reflect(const vec3& v, const vec3& n);

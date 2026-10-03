@@ -5,10 +5,13 @@
 #include "math/ray.h"
 #include "math/interval.h"
 
+class material;
+
 struct hitRecord {
     point3 p;
     vec3 normal;
     double t;
+    std::shared_ptr<material> mat;
     bool frontFace;
 
     void setFaceNormal(const ray& r, const vec3& outwardNormal) {
